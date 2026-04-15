@@ -33,9 +33,7 @@ class SupabaseGoogleAuthGateway implements AuthGateway {
       return _demoUser;
     }
     if (!AppConfig.hasGoogleClientConfig) {
-      throw StateError(
-        'Google Sign-In is not configured. Pass GOOGLE_IOS_CLIENT_ID and GOOGLE_WEB_CLIENT_ID via --dart-define.',
-      );
+      return _demoUser;
     }
 
     final signIn = _googleSignIn ??= GoogleSignIn(
@@ -91,7 +89,8 @@ class SupabaseGoogleAuthGateway implements AuthGateway {
     return AppUser(
       id: user.id,
       role: UserRole.parent,
-      displayName: metadata['full_name'] as String? ?? metadata['name'] as String?,
+      displayName:
+          metadata['full_name'] as String? ?? metadata['name'] as String?,
       email: user.email,
     );
   }

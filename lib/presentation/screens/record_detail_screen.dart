@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../app/app_scope.dart';
+import '../../domain/models/mood_stamp.dart';
 import '../../domain/models/record_entry.dart';
 import '../widgets/record_field_view.dart';
 import '../widgets/app_shell.dart';
@@ -65,7 +66,7 @@ class RecordDetailScreen extends StatelessWidget {
                               ),
                               const SizedBox(height: 10),
                               Text(
-                                '記録項目は入力項目とABC表示文言を分けて表示しています。未定事項は未定のまま保持しています。',
+                                '記嫌スタンプと、その日にあったことの流れを見返せます。',
                                 style: theme.textTheme.bodyMedium?.copyWith(
                                   color: const Color(0xFF667473),
                                   height: 1.7,
@@ -99,17 +100,28 @@ class RecordDetailScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 16),
                         RecordFieldView(
-                          label: '今日のコンディション',
+                          label: '機嫌スタンプ',
                           value: record.condition,
+                          caption: _moodCaption(record),
                         ),
                         const SizedBox(height: 16),
-                        RecordFieldView(label: '困りごと', value: record.trouble),
+                        RecordFieldView(
+                          label: '今日あったこと',
+                          value: record.trouble,
+                          showTags: false,
+                        ),
                         const SizedBox(height: 16),
-                        RecordFieldView(label: 'きっかけ', value: record.trigger),
+                        RecordFieldView(
+                          label: 'きっかけ',
+                          value: record.trigger,
+                          showTags: false,
+                        ),
                         const SizedBox(height: 16),
-                        RecordFieldView(label: 'そのあと', value: record.after),
-                        const SizedBox(height: 16),
-                        _AbcLanguageSection(record: record),
+                        RecordFieldView(
+                          label: 'その後',
+                          value: record.after,
+                          showTags: false,
+                        ),
                       ],
                     ),
                   ),
@@ -120,86 +132,13 @@ class RecordDetailScreen extends StatelessWidget {
   }
 }
 
-class _AbcLanguageSection extends StatelessWidget {
-  const _AbcLanguageSection({required this.record});
-
-  final RecordEntry record;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return SoftSurfaceCard(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            'ABC表示文言',
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            'TODO: 「困りごと」「そのあと」と「起きたこと」「本人の変化」の対応関係は未定です。ここでは入力項目と表示文言を分離して表示しています。',
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: const Color(0xFF677574),
-              height: 1.7,
-            ),
-          ),
-          const SizedBox(height: 18),
-          _AbcRow(label: 'きっかけ', value: _summary(record.trigger.text)),
-          const SizedBox(height: 12),
-          const _AbcRow(label: '起きたこと', value: 'Not implemented'),
-          const SizedBox(height: 12),
-          const _AbcRow(label: '本人の変化', value: 'Not implemented'),
-        ],
-      ),
-    );
+String? _moodCaption(RecordEntry record) {
+  final mood = MoodStamp.fromStorageValue(record.condition.tags.firstOrNull);
+  if (mood == null) {
+    return '機嫌スタンプ未選択';
   }
+  return '${mood.emoji} ${mood.label}';
 }
-
-class _AbcRow extends StatelessWidget {
-  const _AbcRow({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFFCFB),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFF0ECE8)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            label,
-            style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              fontWeight: FontWeight.w800,
-              color: const Color(0xFF006A6B),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            value,
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(height: 1.7),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-String _summary(String value) => value.isEmpty ? '未入力' : value;
 
 String _formatDate(DateTime value) {
   final month = value.month.toString().padLeft(2, '0');

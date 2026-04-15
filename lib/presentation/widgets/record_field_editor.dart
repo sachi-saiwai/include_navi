@@ -7,11 +7,27 @@ class RecordFieldEditor extends StatefulWidget {
   const RecordFieldEditor({
     required this.label,
     required this.initialValue,
+    this.description,
+    this.tagLabel = 'タグ選択値',
+    this.textLabel = '自由記述',
+    this.tagHintText,
+    this.textHintText,
+    this.presetTags = const <String>[],
+    this.showTagInput = true,
+    this.singleSelectPreset = false,
     super.key,
   });
 
   final String label;
   final RecordFieldValue initialValue;
+  final String? description;
+  final String tagLabel;
+  final String textLabel;
+  final String? tagHintText;
+  final String? textHintText;
+  final List<String> presetTags;
+  final bool showTagInput;
+  final bool singleSelectPreset;
 
   @override
   State<RecordFieldEditor> createState() => RecordFieldEditorState();
@@ -47,6 +63,32 @@ class RecordFieldEditorState extends State<RecordFieldEditor> {
     super.dispose();
   }
 
+  void _togglePresetTag(String tag) {
+    final currentTags = _tagsController.text
+        .split(',')
+        .map((item) => item.trim())
+        .where((item) => item.isNotEmpty)
+        .toList();
+
+    if (widget.singleSelectPreset) {
+      if (currentTags.length == 1 && currentTags.first == tag) {
+        _tagsController.text = '';
+      } else {
+        _tagsController.text = tag;
+      }
+      setState(() {});
+      return;
+    }
+
+    if (currentTags.contains(tag)) {
+      currentTags.remove(tag);
+    } else {
+      currentTags.add(tag);
+    }
+    _tagsController.text = currentTags.join(', ');
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -72,33 +114,52 @@ class RecordFieldEditorState extends State<RecordFieldEditor> {
           ),
           const SizedBox(height: 16),
           Text(
-            'タグ選択と自由記述の両方を保持できます。',
+            widget.description ?? 'タグ選択と自由記述の両方を保持できます。',
             style: theme.textTheme.bodySmall?.copyWith(
               color: const Color(0xFF60706F),
               height: 1.5,
             ),
           ),
-          const SizedBox(height: 14),
-          TextField(
-            controller: _tagsController,
-            decoration: const InputDecoration(
-              labelText: 'タグ選択値',
-              hintText: 'タグ管理方式は未定のため、MVPではカンマ区切り入力',
-              border: OutlineInputBorder(),
-              filled: true,
-              fillColor: Color(0xFFFFFCFB),
+          if (widget.presetTags.isNotEmpty) ...<Widget>[
+            const SizedBox(height: 14),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: widget.presetTags.map((tag) {
+                final isSelected = buildValue().tags.contains(tag);
+                return FilterChip(
+                  selected: isSelected,
+                  label: Text(tag),
+                  onSelected: (_) => _togglePresetTag(tag),
+                );
+              }).toList(),
             ),
-          ),
+          ],
+          if (widget.showTagInput) ...<Widget>[
+            const SizedBox(height: 14),
+            TextField(
+              controller: _tagsController,
+              decoration: InputDecoration(
+                labelText: widget.tagLabel,
+                hintText: widget.tagHintText ?? 'カンマ区切りで入力',
+                border: const OutlineInputBorder(),
+                filled: true,
+                fillColor: const Color(0xFFFFFCFB),
+              ),
+              onChanged: (_) => setState(() {}),
+            ),
+          ],
           const SizedBox(height: 14),
           TextField(
             controller: _textController,
             minLines: 3,
             maxLines: 5,
-            decoration: const InputDecoration(
-              labelText: '自由記述',
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: widget.textLabel,
+              hintText: widget.textHintText,
+              border: const OutlineInputBorder(),
               filled: true,
-              fillColor: Color(0xFFFFFCFB),
+              fillColor: const Color(0xFFFFFCFB),
             ),
           ),
         ],

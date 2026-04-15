@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../app/app_scope.dart';
 import '../../domain/models/record_field_value.dart';
+import '../../domain/models/mood_stamp.dart';
 import '../widgets/record_field_editor.dart';
 import '../widgets/app_shell.dart';
 import '../widgets/soft_surface_card.dart';
@@ -76,7 +77,7 @@ class _RecordFormScreenState extends State<RecordFormScreen> {
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          'ABC方式の記録を、タグと自由記述の両方で残せます。',
+                          'その日の様子を、4つの項目だけでシンプルに残せます。',
                           style: theme.textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.w800,
                             height: 1.3,
@@ -84,7 +85,7 @@ class _RecordFormScreenState extends State<RecordFormScreen> {
                         ),
                         const SizedBox(height: 10),
                         Text(
-                          '仕様が未定の項目は固定せず、そのまま扱っています。保存後は記録一覧から振り返れます。',
+                          '機嫌スタンプ、今日あったこと、きっかけ、その後を記録します。保存後は月次の振り返り画面からグラフとサマリーを見返せます。',
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: const Color(0xFF667473),
                             height: 1.7,
@@ -111,8 +112,6 @@ class _RecordFormScreenState extends State<RecordFormScreen> {
                         const Text(
                           'TODO: 必須/任意は未定のため、このMVPでは必須バリデーションを設けていません。',
                         ),
-                        const SizedBox(height: 6),
-                        const Text('TODO: 1日に複数記録できるか未定のため、重複制御は実装していません。'),
                       ],
                     ),
                   ),
@@ -160,26 +159,46 @@ class _RecordFormScreenState extends State<RecordFormScreen> {
                   const SizedBox(height: 16),
                   RecordFieldEditor(
                     key: _conditionKey,
-                    label: '今日のコンディション',
+                    label: '機嫌スタンプ',
                     initialValue: const RecordFieldValue(),
+                    description: '機嫌をスタンプで選び、必要ならメモも残せます。',
+                    presetTags: MoodStamp.options
+                        .map((option) => option.storageValue)
+                        .toList(),
+                    showTagInput: false,
+                    singleSelectPreset: true,
+                    textLabel: 'メモ（任意）',
+                    textHintText: 'その日の機嫌について補足があれば入力',
                   ),
                   const SizedBox(height: 16),
                   RecordFieldEditor(
                     key: _troubleKey,
-                    label: '困りごと',
+                    label: '今日あったこと',
                     initialValue: const RecordFieldValue(),
+                    description: 'その日にあった出来事を自由に記録します。',
+                    showTagInput: false,
+                    textLabel: '内容',
+                    textHintText: '今日の出来事を書く',
                   ),
                   const SizedBox(height: 16),
                   RecordFieldEditor(
                     key: _triggerKey,
                     label: 'きっかけ',
                     initialValue: const RecordFieldValue(),
+                    description: '何がきっかけだったかを残します。',
+                    showTagInput: false,
+                    textLabel: '内容',
+                    textHintText: 'きっかけを書く',
                   ),
                   const SizedBox(height: 16),
                   RecordFieldEditor(
                     key: _afterKey,
-                    label: 'そのあと',
+                    label: 'その後',
                     initialValue: const RecordFieldValue(),
+                    description: '出来事のあと、どうなったかを残します。',
+                    showTagInput: false,
+                    textLabel: '内容',
+                    textHintText: 'その後の様子を書く',
                   ),
                   const SizedBox(height: 24),
                   Align(

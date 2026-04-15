@@ -8,5 +8,6 @@ abstract class PdfExportService {
     required AppUser createdBy,
     required ChildProfile child,
     required List<RecordEntry> records,
+    DateTime? month,
   });
 }

@@ -1,8 +1,10 @@
 import 'package:flutter/foundation.dart';
 
+import 'monthly_reflection_summary_builder.dart';
 import '../domain/models/app_user.dart';
 import '../domain/models/child_profile.dart';
 import '../domain/models/invitation.dart';
+import '../domain/models/monthly_reflection_summary.dart';
 import '../domain/models/pdf_export.dart';
 import '../domain/models/record_entry.dart';
 import '../domain/models/record_field_value.dart';
@@ -19,11 +21,11 @@ class AppController extends ChangeNotifier {
     required RecordRepository recordRepository,
     required InvitationRepository invitationRepository,
     required PdfExportService pdfExportService,
-  })  : _authGateway = authGateway,
-        _childProfileRepository = childProfileRepository,
-        _recordRepository = recordRepository,
-        _invitationRepository = invitationRepository,
-        _pdfExportService = pdfExportService;
+  }) : _authGateway = authGateway,
+       _childProfileRepository = childProfileRepository,
+       _recordRepository = recordRepository,
+       _invitationRepository = invitationRepository,
+       _pdfExportService = pdfExportService;
 
   final AuthGateway _authGateway;
   final ChildProfileRepository _childProfileRepository;
@@ -56,7 +58,7 @@ class AppController extends ChangeNotifier {
       currentUser = await _authGateway.signInWithGoogle();
       await _reloadChildProfiles();
       if (currentUser?.id == 'local-demo-parent') {
-        infoMessage = 'Supabase未設定のため、開発用の demo ユーザーでログインしました。';
+        infoMessage = 'Googleログイン設定が未投入のため、開発用の demo ユーザーでログインしました。';
       }
     });
   }
@@ -108,7 +110,9 @@ class AppController extends ChangeNotifier {
       ownerUserId: user.id,
       nickname: nickname,
       traitsMemo: traitsMemo,
-      createdAt: id == null ? now : (await _childProfileRepository.findById(id))?.createdAt ?? now,
+      createdAt: id == null
+          ? now
+          : (await _childProfileRepository.findById(id))?.createdAt ?? now,
       updatedAt: now,
     );
 
@@ -155,9 +159,7 @@ class AppController extends ChangeNotifier {
     }, notifyAtStart: false);
   }
 
-  Future<void> saveInvitation({
-    required String invitedUserId,
-  }) async {
+  Future<void> saveInvitation({required String invitedUserId}) async {
     final child = selectedChild;
     if (child == null) {
       return;
@@ -172,12 +174,14 @@ class AppController extends ChangeNotifier {
 
     await _runBusyTask(() async {
       await _invitationRepository.save(invitation);
-      selectedChildInvitations = await _invitationRepository.fetchByChildId(child.id);
+      selectedChildInvitations = await _invitationRepository.fetchByChildId(
+        child.id,
+      );
       infoMessage = '招待情報を保存しました。';
     }, notifyAtStart: false);
   }
 
-  Future<void> exportPdf() async {
+  Future<void> exportPdf({DateTime? month}) async {
     final user = currentUser;
     final child = selectedChild;
     if (user == null || child == null) {
@@ -189,9 +193,33 @@ class AppController extends ChangeNotifier {
         createdBy: user,
         child: child,
         records: selectedChildRecords,
+        month: month,
       );
-      infoMessage = 'PDFデータを生成しました。保存先や共有方法は未定のため、このMVPではメモリ上に保持しています。';
+      infoMessage = '月次PDFデータを生成しました。保存先や共有方法は未定のため、このMVPではメモリ上に保持しています。';
     });
+  }
+
+  List<DateTime> getAvailableRecordMonths() {
+    final months = <DateTime>[];
+    final seen = <String>{};
+
+    for (final record in selectedChildRecords) {
+      final month = DateTime(record.date.year, record.date.month);
+      final key = '${month.year}-${month.month}';
+      if (seen.add(key)) {
+        months.add(month);
+      }
+    }
+
+    months.sort((left, right) => right.compareTo(left));
+    return months;
+  }
+
+  MonthlyReflectionSummary buildMonthlySummary(DateTime month) {
+    return buildMonthlyReflectionSummary(
+      month: month,
+      records: selectedChildRecords,
+    );
   }
 
   RecordEntry? findRecordById(String recordId) {
@@ -212,7 +240,9 @@ class AppController extends ChangeNotifier {
     }
 
     selectedChildRecords = await _recordRepository.fetchByChildId(child.id);
-    selectedChildInvitations = await _invitationRepository.fetchByChildId(child.id);
+    selectedChildInvitations = await _invitationRepository.fetchByChildId(
+      child.id,
+    );
   }
 
   Future<void> _reloadChildProfiles() async {

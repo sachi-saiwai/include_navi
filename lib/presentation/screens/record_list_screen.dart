@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../app/app_scope.dart';
+import '../../domain/models/mood_stamp.dart';
 import '../../domain/models/record_entry.dart';
 import 'record_detail_screen.dart';
 import 'record_form_screen.dart';
@@ -76,10 +77,13 @@ class RecordListScreen extends StatelessWidget {
                 ),
                 OutlinedButton.icon(
                   onPressed: () async {
-                    await controller.exportPdf();
+                    final months = controller.getAvailableRecordMonths();
+                    await controller.exportPdf(
+                      month: months.isEmpty ? DateTime.now() : months.first,
+                    );
                   },
                   icon: const Icon(Icons.picture_as_pdf),
-                  label: const Text('PDF出力'),
+                  label: const Text('月次PDF出力'),
                 ),
                 OutlinedButton.icon(
                   onPressed: () {
@@ -97,7 +101,7 @@ class RecordListScreen extends StatelessWidget {
                   leading: const Icon(Icons.picture_as_pdf),
                   title: const Text('直近のPDF生成結果'),
                   subtitle: Text(
-                    '生成日時: ${_dateTime(controller.latestPdfExport!.createdAt)} / ${controller.latestPdfExport!.fileBytes.length} bytes\nTODO: 保存先・共有方法は未定のため未実装',
+                    '生成日時: ${_dateTime(controller.latestPdfExport!.createdAt)} / ${controller.latestPdfExport!.fileBytes.length} bytes\n月次サマリーPDFを生成しました。TODO: 保存先・共有方法は未定のため未実装',
                   ),
                 ),
               ),
@@ -130,20 +134,28 @@ class _RecordListTile extends StatelessWidget {
     return Card(
       child: ListTile(
         title: Text(_date(record.date)),
+        leading: CircleAvatar(
+          backgroundColor: const Color(0xFFE9FBF4),
+          child: Text(_moodEmoji(record)),
+        ),
         subtitle: Text(
-          record.condition.text.isEmpty
-              ? '今日のコンディション未入力'
-              : '今日のコンディション: ${record.condition.text}',
+          record.trouble.text.isEmpty
+              ? '今日あったこと未入力'
+              : '今日あったこと: ${record.trouble.text}',
         ),
         onTap: () {
-          Navigator.of(context).pushNamed(
-            RecordDetailScreen.routeName,
-            arguments: record.id,
-          );
+          Navigator.of(
+            context,
+          ).pushNamed(RecordDetailScreen.routeName, arguments: record.id);
         },
       ),
     );
   }
+}
+
+String _moodEmoji(RecordEntry record) {
+  final mood = MoodStamp.fromStorageValue(record.condition.tags.firstOrNull);
+  return mood?.emoji ?? '•';
 }
 
 String _date(DateTime value) {

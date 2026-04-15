@@ -8,12 +8,14 @@ class RecordFieldView extends StatelessWidget {
     required this.label,
     required this.value,
     this.caption,
+    this.showTags = true,
     super.key,
   });
 
   final String label;
   final RecordFieldValue value;
   final String? caption;
+  final bool showTags;
 
   @override
   Widget build(BuildContext context) {
@@ -40,14 +42,16 @@ class RecordFieldView extends StatelessWidget {
               ),
             ),
           ],
-          const SizedBox(height: 16),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: value.tags.isEmpty
-                ? const <Widget>[Chip(label: Text('タグ未入力'))]
-                : value.tags.map((tag) => Chip(label: Text(tag))).toList(),
-          ),
+          if (showTags) ...<Widget>[
+            const SizedBox(height: 16),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: value.tags.isEmpty
+                  ? const <Widget>[Chip(label: Text('タグ未入力'))]
+                  : value.tags.map((tag) => Chip(label: Text(tag))).toList(),
+            ),
+          ],
           const SizedBox(height: 16),
           Container(
             width: double.infinity,
