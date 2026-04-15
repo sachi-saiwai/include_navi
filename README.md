@@ -1,17 +1,31 @@
 # include_navi
 
-A new Flutter project.
+Flutter アプリ「いんくるなび」のMVP実装です。
 
-## Getting Started
+## GitHub Pages
 
-This project is a starting point for a Flutter application.
+このリポジトリは `main` ブランチの `docs/` フォルダを GitHub Pages の公開元にする前提です。
 
-A few resources to get you started if this is your first Flutter project:
+公開URL想定:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- `https://sachi-saiwai.github.io/include_navi/`
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-# include_navi
+Pages 用ビルドを更新するコマンド:
+
+```bash
+flutter build web --release --base-href /include_navi/ --output docs
+cp docs/index.html docs/404.html
+```
+
+GitHub 側の設定:
+
+1. Repository Settings を開く
+2. Pages を開く
+3. Source を `Deploy from a branch` にする
+4. Branch を `main`
+5. Folder を `/docs`
+6. Save
+
+## 開発メモ
+
+- MVP設計メモ: [notes/mvp_design.md](/Users/sachikosaga/Documents/flutter/include_navi/notes/mvp_design.md)
