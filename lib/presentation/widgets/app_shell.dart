@@ -35,42 +35,40 @@ class AppShell extends StatelessWidget {
       ),
       body: Stack(
         children: <Widget>[
-          const Positioned.fill(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: <Color>[
-                    Color(0xFFF7F3EC),
-                    Color(0xFFF3F7F6),
-                    Color(0xFFFFFCF7),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-            ),
-          ),
+          const Positioned.fill(child: ColoredBox(color: Color(0xFFFBF9F8))),
           Positioned(
-            left: -80,
-            top: -40,
+            left: -60,
+            top: -30,
             child: Container(
-              width: 220,
-              height: 220,
+              width: 160,
+              height: 160,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                color: Color(0x1A0E7490),
+                color: Color(0x109FF0F0),
               ),
             ),
           ),
           Positioned(
             right: -30,
-            top: 70,
+            top: 90,
             child: Container(
-              width: 140,
-              height: 140,
+              width: 120,
+              height: 120,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                color: Color(0x14F59E0B),
+                color: Color(0x10FFD6C8),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: -30,
+            left: 24,
+            child: Container(
+              width: 120,
+              height: 120,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Color(0x10CAF9DC),
               ),
             ),
           ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../app/app_scope.dart';
 import '../../application/app_controller.dart';
 import '../widgets/message_banner.dart';
+import '../widgets/soft_surface_card.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -17,42 +18,40 @@ class LoginScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: <Widget>[
-          const Positioned.fill(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: <Color>[
-                    Color(0xFFF0F8F7),
-                    Color(0xFFF8F2E8),
-                    Color(0xFFFFFCF8),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+          const Positioned.fill(child: ColoredBox(color: Color(0xFFFBF9F8))),
+          Positioned(
+            top: -30,
+            right: -30,
+            child: Container(
+              width: 160,
+              height: 160,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Color(0x109FF0F0),
               ),
             ),
           ),
           Positioned(
-            top: -40,
-            right: -40,
+            bottom: -30,
+            left: -10,
             child: Container(
-              width: 220,
-              height: 220,
+              width: 150,
+              height: 150,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                color: Color(0x140E7490),
+                color: Color(0x10FFD6C8),
               ),
             ),
           ),
           Positioned(
-            bottom: -60,
-            left: -20,
+            top: 180,
+            left: -40,
             child: Container(
-              width: 260,
-              height: 260,
+              width: 110,
+              height: 110,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                color: Color(0x12F59E0B),
+                color: Color(0x10CAF9DC),
               ),
             ),
           ),
@@ -68,13 +67,9 @@ class LoginScreen extends StatelessWidget {
                       if (isWide) {
                         return Row(
                           children: <Widget>[
-                            Expanded(
-                              child: _LoginHero(theme: theme),
-                            ),
+                            Expanded(child: _LoginHero(theme: theme)),
                             const SizedBox(width: 28),
-                            Expanded(
-                              child: _LoginCard(controller: controller),
-                            ),
+                            Expanded(child: _LoginCard(controller: controller)),
                           ],
                         );
                       }
@@ -110,20 +105,12 @@ class _LoginHero extends StatelessWidget {
       padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(36),
-        gradient: const LinearGradient(
-          colors: <Color>[
-            Color(0xFF0E7490),
-            Color(0xFF155E75),
-            Color(0xFF123B54),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: const Color(0xFF006A6B),
         boxShadow: const <BoxShadow>[
           BoxShadow(
-            color: Color(0x220E7490),
-            blurRadius: 30,
-            offset: Offset(0, 18),
+            color: Color(0x14006A6B),
+            blurRadius: 22,
+            offset: Offset(0, 12),
           ),
         ],
       ),
@@ -166,7 +153,7 @@ class _LoginHero extends StatelessWidget {
           Text(
             '最初は子どもプロフィールを登録し、その後に毎日の記録一覧や振り返りへ進めます。',
             style: theme.textTheme.bodyLarge?.copyWith(
-              color: const Color(0xFFE6F7FA),
+              color: const Color(0xFFE6FBFB),
               height: 1.7,
             ),
           ),
@@ -193,62 +180,70 @@ class _LoginCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              'ログイン',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
+    final theme = Theme.of(context);
+
+    return SoftSurfaceCard(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: const Color(0xFF006A6B),
+              border: Border.all(color: const Color(0xFFBEECEC), width: 4),
             ),
-            const SizedBox(height: 10),
-            const Text(
-              'Supabase設定が未投入の間は、開発用 demo ユーザーでホーム画面まで進めます。',
+            child: const Icon(Icons.favorite_outline, color: Colors.white),
+          ),
+          const SizedBox(height: 18),
+          Text(
+            'ログイン',
+            style: theme.textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.w800,
             ),
-            const SizedBox(height: 18),
-            const MessageBanner(),
-            Container(
-              padding: const EdgeInsets.all(18),
-              decoration: BoxDecoration(
-                color: const Color(0xFFF8F8F4),
-                borderRadius: BorderRadius.circular(22),
-              ),
-              child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    '接続メモ',
-                    style: TextStyle(fontWeight: FontWeight.w700),
-                  ),
-                  SizedBox(height: 10),
-                  Text('iOS + Supabase 前提のGoogleログイン構成です。'),
-                  SizedBox(height: 6),
-                  Text('TODO: 本番利用には Supabase と Google Client ID の実値投入が必要です。'),
-                ],
-              ),
+          ),
+          const SizedBox(height: 10),
+          const Text('Supabase設定が未投入の間は、開発用 demo ユーザーでホーム画面まで進めます。'),
+          const SizedBox(height: 18),
+          const MessageBanner(),
+          const SizedBox(height: 18),
+          Container(
+            padding: const EdgeInsets.all(18),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF8FFFB),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: const Color(0xFFDDEEE6)),
             ),
-            const SizedBox(height: 20),
-            FilledButton.icon(
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text('接続メモ', style: TextStyle(fontWeight: FontWeight.w700)),
+                SizedBox(height: 10),
+                Text('iOS + Supabase 前提のGoogleログイン構成です。'),
+                SizedBox(height: 6),
+                Text('TODO: 本番利用には Supabase と Google Client ID の実値投入が必要です。'),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
               onPressed: controller.signInWithGoogle,
               icon: const Icon(Icons.arrow_forward),
               label: const Text('Googleでログイン / Demoで続行'),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
 
 class _HeroChip extends StatelessWidget {
-  const _HeroChip({
-    required this.icon,
-    required this.label,
-  });
+  const _HeroChip({required this.icon, required this.label});
 
   final IconData icon;
   final String label;

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../domain/models/record_field_value.dart';
+import 'soft_surface_card.dart';
 
 class RecordFieldEditor extends StatefulWidget {
   const RecordFieldEditor({
@@ -36,10 +37,7 @@ class RecordFieldEditorState extends State<RecordFieldEditor> {
         .where((item) => item.isNotEmpty)
         .toList();
 
-    return RecordFieldValue(
-      tags: tags,
-      text: _textController.text.trim(),
-    );
+    return RecordFieldValue(tags: tags, text: _textController.text.trim());
   }
 
   @override
@@ -51,34 +49,59 @@ class RecordFieldEditorState extends State<RecordFieldEditor> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(widget.label, style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _tagsController,
-              decoration: const InputDecoration(
-                labelText: 'タグ選択値',
-                hintText: 'タグ管理方式は未定のため、MVPではカンマ区切り入力',
-                border: OutlineInputBorder(),
+    final theme = Theme.of(context);
+
+    return SoftSurfaceCard(
+      padding: const EdgeInsets.all(22),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+            decoration: BoxDecoration(
+              color: const Color(0xFFCAF9DC),
+              borderRadius: BorderRadius.circular(999),
+            ),
+            child: Text(
+              widget.label,
+              style: theme.textTheme.labelLarge?.copyWith(
+                color: const Color(0xFF245437),
+                fontWeight: FontWeight.w800,
               ),
             ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _textController,
-              minLines: 2,
-              maxLines: 4,
-              decoration: const InputDecoration(
-                labelText: '自由記述',
-                border: OutlineInputBorder(),
-              ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'タグ選択と自由記述の両方を保持できます。',
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: const Color(0xFF60706F),
+              height: 1.5,
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 14),
+          TextField(
+            controller: _tagsController,
+            decoration: const InputDecoration(
+              labelText: 'タグ選択値',
+              hintText: 'タグ管理方式は未定のため、MVPではカンマ区切り入力',
+              border: OutlineInputBorder(),
+              filled: true,
+              fillColor: Color(0xFFFFFCFB),
+            ),
+          ),
+          const SizedBox(height: 14),
+          TextField(
+            controller: _textController,
+            minLines: 3,
+            maxLines: 5,
+            decoration: const InputDecoration(
+              labelText: '自由記述',
+              border: OutlineInputBorder(),
+              filled: true,
+              fillColor: Color(0xFFFFFCFB),
+            ),
+          ),
+        ],
       ),
     );
   }

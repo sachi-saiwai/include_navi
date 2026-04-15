@@ -39,27 +39,27 @@ class _IncludeNaviAppState extends State<IncludeNaviApp> {
         theme: ThemeData(
           colorScheme: const ColorScheme(
             brightness: Brightness.light,
-            primary: Color(0xFF0E7490),
+            primary: Color(0xFF006A6B),
             onPrimary: Colors.white,
-            secondary: Color(0xFFF59E0B),
-            onSecondary: Color(0xFF1F2937),
+            secondary: Color(0xFF9FF0F0),
+            onSecondary: Color(0xFF143536),
             error: Color(0xFFB42318),
             onError: Colors.white,
-            surface: Color(0xFFFFFCF7),
-            onSurface: Color(0xFF172033),
+            surface: Color(0xFFFFFFFF),
+            onSurface: Color(0xFF1E2B2C),
           ),
-          scaffoldBackgroundColor: const Color(0xFFF7F3EC),
+          scaffoldBackgroundColor: const Color(0xFFFBF9F8),
           textTheme: ThemeData.light().textTheme.apply(
-                bodyColor: const Color(0xFF172033),
-                displayColor: const Color(0xFF172033),
-              ),
+            bodyColor: const Color(0xFF1E2B2C),
+            displayColor: const Color(0xFF1E2B2C),
+          ),
           appBarTheme: const AppBarTheme(
             centerTitle: false,
             backgroundColor: Colors.transparent,
             surfaceTintColor: Colors.transparent,
-            foregroundColor: Color(0xFF172033),
+            foregroundColor: Color(0xFF1E2B2C),
             titleTextStyle: TextStyle(
-              color: Color(0xFF172033),
+              color: Color(0xFF1E2B2C),
               fontSize: 26,
               fontWeight: FontWeight.w700,
             ),
@@ -67,13 +67,14 @@ class _IncludeNaviAppState extends State<IncludeNaviApp> {
           cardTheme: CardThemeData(
             color: Colors.white,
             elevation: 0,
+            shadowColor: const Color(0x110E3A3C),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(24),
-              side: const BorderSide(color: Color(0xFFE4E1D7)),
+              borderRadius: BorderRadius.circular(28),
+              side: const BorderSide(color: Color(0xFFE9E5E3)),
             ),
           ),
           chipTheme: ChipThemeData(
-            backgroundColor: const Color(0xFFE8F4F3),
+            backgroundColor: const Color(0xFFCAF9DC),
             side: BorderSide.none,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(999),
@@ -81,7 +82,7 @@ class _IncludeNaviAppState extends State<IncludeNaviApp> {
           ),
           filledButtonTheme: FilledButtonThemeData(
             style: FilledButton.styleFrom(
-              backgroundColor: const Color(0xFF0E7490),
+              backgroundColor: const Color(0xFF006A6B),
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
               textStyle: const TextStyle(
@@ -95,8 +96,8 @@ class _IncludeNaviAppState extends State<IncludeNaviApp> {
           ),
           outlinedButtonTheme: OutlinedButtonThemeData(
             style: OutlinedButton.styleFrom(
-              foregroundColor: const Color(0xFF0E7490),
-              side: const BorderSide(color: Color(0xFFD6DFE3)),
+              foregroundColor: const Color(0xFF006A6B),
+              side: const BorderSide(color: Color(0xFFD8E3E0)),
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
               textStyle: const TextStyle(
                 fontSize: 15,
@@ -108,10 +109,10 @@ class _IncludeNaviAppState extends State<IncludeNaviApp> {
             ),
           ),
           floatingActionButtonTheme: const FloatingActionButtonThemeData(
-            backgroundColor: Color(0xFF0E7490),
+            backgroundColor: Color(0xFF006A6B),
             foregroundColor: Colors.white,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(18)),
+              borderRadius: BorderRadius.all(Radius.circular(22)),
             ),
           ),
           useMaterial3: true,
